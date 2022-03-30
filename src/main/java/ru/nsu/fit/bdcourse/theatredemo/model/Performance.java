@@ -1,7 +1,10 @@
 package ru.nsu.fit.bdcourse.theatredemo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -13,24 +16,28 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
-//@NoArgsConstructor
 @Entity
 @Table(name = "performances")
 public class Performance {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name = "title")
+    @Column(name = "title", columnDefinition = "TEXT")
     private String title;
-    @Column(name = "date")
+    @Column(name = "date", columnDefinition = "DATE")
     private String date;
-    @Column(name = "description")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "author_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    private Author author;
 
-    @ManyToMany
-    @JoinTable(name = "performances_actors",
-            joinColumns = @JoinColumn(name = "performance_id", referencedColumnName = "actors_id"))
-    private List<Actor> actors = new ArrayList<>();
+//    @ManyToMany
+//    @JoinTable(name = "performances_actors",
+//            joinColumns = @JoinColumn(name = "performance_id", referencedColumnName = "actors_id"))
+//    private List<Actor> actors = new ArrayList<>();
 
     public Performance(String title, String date, String description) {
         this.title = title;

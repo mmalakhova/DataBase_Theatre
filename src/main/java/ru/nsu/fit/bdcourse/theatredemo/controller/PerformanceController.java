@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.nsu.fit.bdcourse.theatredemo.model.Performance;
+import ru.nsu.fit.bdcourse.theatredemo.repository.AuthorRepository;
 import ru.nsu.fit.bdcourse.theatredemo.repository.PerformanceRepository;
 
 import java.util.ArrayList;
@@ -16,19 +17,22 @@ import java.util.Optional;
 @RequestMapping("/theatre")
 public class PerformanceController {
 
-    private final PerformanceRepository repository;
+    private final PerformanceRepository performanceRepository;
+    private final AuthorRepository authorRepository;
 
-    public PerformanceController(PerformanceRepository repository) {
-        this.repository = repository;
+    public PerformanceController(PerformanceRepository performanceRepository,
+                                 AuthorRepository authorRepository) {
+        this.authorRepository = authorRepository;
+        this.performanceRepository = performanceRepository;
     }
 
     @GetMapping("/performances")
     public ResponseEntity<List<Performance>> getAllPerformances(@RequestParam(required = false) String title) {
         List<Performance> performances = new ArrayList<>();
         if (title == null) {
-            performances.addAll(repository.findAll());
+            performances.addAll(performanceRepository.findAll());
         } else {
-            performances.addAll(repository.findPerformancesByTitle(title));
+            performances.addAll(performanceRepository.findPerformancesByTitle(title));
         }
 
         if (performances.isEmpty()) {
@@ -41,7 +45,7 @@ public class PerformanceController {
 
     @GetMapping("/performances/{id}")
     public ResponseEntity<Performance> getPerformanceById(@PathVariable("id") long id) {
-        Optional<Performance> performanceData = repository.findById(id);
+        Optional<Performance> performanceData = performanceRepository.findById(id);
         return performanceData.map(performance ->
                 new ResponseEntity<>(performance, HttpStatus.OK)).orElseGet(() ->
                 new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -49,7 +53,7 @@ public class PerformanceController {
 
     @PostMapping("/performances")
     public ResponseEntity<Performance> createPerformance(@RequestBody Performance performance) {
-        Performance createdPerformance = repository
+        Performance createdPerformance = performanceRepository
                 .save(new Performance(performance.getTitle(), performance.getDate(), performance.getDescription()));
         return  new ResponseEntity<>(createdPerformance, HttpStatus.CREATED);
     }
@@ -57,13 +61,13 @@ public class PerformanceController {
     @PutMapping("/performances/{id}")
     public ResponseEntity<Performance> updatePerformance(@PathVariable("id")long id,
                                                          @RequestBody Performance performance) {
-        Optional<Performance> performanceData = repository.findById(id);
+        Optional<Performance> performanceData = performanceRepository.findById(id);
         if (performanceData.isPresent()) {
             Performance updatedPerformance = performanceData.get();
             updatedPerformance.setTitle(performance.getDate());
             updatedPerformance.setDate(performance.getDate());
             updatedPerformance.setDescription(performance.getDescription());
-            return new ResponseEntity<>(repository.save(updatedPerformance), HttpStatus.OK);
+            return new ResponseEntity<>(performanceRepository.save(updatedPerformance), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -71,23 +75,33 @@ public class PerformanceController {
 
     @DeleteMapping("/performances")
     public ResponseEntity<HttpStatus> deleteAllPerformances() {
-        repository.deleteAll();
+        performanceRepository.deleteAll();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/performances/{id}")
     public ResponseEntity<HttpStatus> deleteTutorial(@PathVariable("id") long id) {
-        repository.deleteById(id);
+        performanceRepository.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/performances/{date}")
     public ResponseEntity<List<Performance>> findPerformancesByDate(@PathVariable("date") String date) {
-        List<Performance> performances = repository.findPerformancesByDate(date);
+        List<Performance> performances = performanceRepository.findPerformancesByDate(date);
         if (performances.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
             return new ResponseEntity<>(performances, HttpStatus.OK);
         }
+    }
+
+    //requests connected to authors table
+    @GetMapping("/authors/{authorId}/performances")
+    public ResponseEntity<List<Performance>> getAllPerformancesByAuthorId(@PathVariable(value = "authorId") Long authorId) {
+        if (!authorRepository.existsById(authorId)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        List<Performance> performances = performanceRepository.findPerformancesByActorsId(authorId);
+        return new ResponseEntity<>(performances, HttpStatus.OK);
     }
 }
