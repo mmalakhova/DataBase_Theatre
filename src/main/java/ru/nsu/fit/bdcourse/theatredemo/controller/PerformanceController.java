@@ -64,7 +64,7 @@ public class PerformanceController {
         Optional<Performance> performanceData = performanceRepository.findById(id);
         if (performanceData.isPresent()) {
             Performance updatedPerformance = performanceData.get();
-            updatedPerformance.setTitle(performance.getDate());
+            updatedPerformance.setTitle(performance.getTitle());
             updatedPerformance.setDate(performance.getDate());
             updatedPerformance.setDescription(performance.getDescription());
             return new ResponseEntity<>(performanceRepository.save(updatedPerformance), HttpStatus.OK);
@@ -81,8 +81,13 @@ public class PerformanceController {
 
     @DeleteMapping("/performances/{id}")
     public ResponseEntity<HttpStatus> deleteTutorial(@PathVariable("id") long id) {
-        performanceRepository.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        Optional<Performance> performanceToDelete = performanceRepository.findById(id);
+        if (performanceToDelete.isPresent()) {
+            performanceRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/performances/{date}")
@@ -104,4 +109,5 @@ public class PerformanceController {
         List<Performance> performances = performanceRepository.findPerformancesByActorsId(authorId);
         return new ResponseEntity<>(performances, HttpStatus.OK);
     }
+
 }
