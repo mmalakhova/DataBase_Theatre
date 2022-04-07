@@ -1,16 +1,13 @@
 package ru.nsu.fit.bdcourse.theatredemo.model;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.hibernate.Hibernate;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.util.Objects;
+import java.time.LocalDate;
+import java.util.Set;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
@@ -20,39 +17,42 @@ public class Performance {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(name = "title", columnDefinition = "TEXT")
-    private String title;
-    @Column(name = "date", columnDefinition = "DATE")
-    private String date;
-    @Column(name = "description", columnDefinition = "TEXT")
-    private String description;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "author_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JsonIgnore
+
+    @OneToMany(mappedBy = "performance", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Set<Ticket> ticketSet;
+
+    @OneToMany(mappedBy = "performance", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private Set<Role> roleSet;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
+    @ToString.Exclude
     private Author author;
 
-//    @ManyToMany
-//    @JoinTable(name = "performances_actors",
-//            joinColumns = @JoinColumn(name = "performance_id", referencedColumnName = "actors_id"))
-//    private List<Actor> actors = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "concert_tour_id")
+    @ToString.Exclude
+    private ConcertTour concertTour;
 
-    public Performance(String title, String date, String description) {
-        this.title = title;
-        this.date = date;
-        this.description = description;
-    }
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "musicians",
+            joinColumns = @JoinColumn(name = ""))
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Performance that = (Performance) o;
-        return id != null && Objects.equals(id, that.id);
-    }
+    @Column(name = "genre")
+    private String genre;
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
+    @Column(name = "age_rating")
+    private String ageRating;
+
+    @Column(name = "date")
+    private LocalDate date;
+
+    @Column(name = "is_premiere")
+    private Boolean isPremiere;
+
+    @Column(name = "number_of_seats")
+    private Integer numberOfSeats;
+
 }

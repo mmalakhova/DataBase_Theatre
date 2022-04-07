@@ -1,13 +1,13 @@
 package ru.nsu.fit.bdcourse.theatredemo.model;
 
-
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
@@ -17,19 +17,32 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(name = "name")
-    private String name;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Role role = (Role) o;
-        return id == role.id && Objects.equals(name, role.name);
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "performance_id")
+    @ToString.Exclude
+    private Performance performance;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
-    }
+    @ManyToOne
+    @JoinColumn(name = "actor_id")
+    private Actor actor;
+
+    @Column(name = "vocal_requirements")
+    private String vocalRequirements;
+
+    @Column(name = "height_requirements")
+    private Integer heightRequirements;
+
+    @Column(name = "age_requirements")
+    private Integer ageRequirements;
+
+    @Enumerated(EnumType.STRING)
+    @Type(type = "gender_type")
+    @Column(name = "gender_requirements")
+    private String genderRequirements;
+
+    @Enumerated(EnumType.STRING)
+    @Type(type = "role_type")
+    @Column(name = "first_or_second_role")
+    private String roleType;
 }
