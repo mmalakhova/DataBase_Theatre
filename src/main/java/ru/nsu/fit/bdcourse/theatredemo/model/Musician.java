@@ -1,9 +1,12 @@
 package ru.nsu.fit.bdcourse.theatredemo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -36,5 +39,12 @@ public class Musician {
 
     @Column(name = "salary")
     private Integer salary;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE
+    }, mappedBy = "musicians")
+    @JsonIgnore
+    @ToString.Exclude
+    private Set<Performance> performances = new HashSet<>();
 
 }

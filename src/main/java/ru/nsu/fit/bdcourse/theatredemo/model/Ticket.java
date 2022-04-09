@@ -1,5 +1,6 @@
 package ru.nsu.fit.bdcourse.theatredemo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -22,6 +23,7 @@ public class Ticket {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "performance_id")
     @ToString.Exclude
+    @JsonIgnore
     private Performance performance;
 
     @Column(name = "price")
