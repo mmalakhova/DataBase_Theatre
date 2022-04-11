@@ -2,6 +2,9 @@ package ru.nsu.fit.bdcourse.theatredemo.model;
 
 import lombok.*;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import ru.nsu.fit.bdcourse.theatredemo.enums.GenderType;
+import ru.nsu.fit.bdcourse.theatredemo.enums.RoleType;
 
 import javax.persistence.*;
 
@@ -13,18 +16,27 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "roles")
+@TypeDef(
+        name = "gender_type",
+        typeClass = GenderType.class
+)
+@TypeDef(
+        name = "role_type",
+        typeClass = RoleType.class
+)
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "performance_id")
     @ToString.Exclude
     private Performance performance;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "actor_id")
+    @ToString.Exclude
     private Actor actor;
 
     @Column(name = "vocal_requirements")
@@ -36,13 +48,11 @@ public class Role {
     @Column(name = "age_requirements")
     private Integer ageRequirements;
 
-    @Enumerated(EnumType.STRING)
     @Type(type = "gender_type")
     @Column(name = "gender_requirements")
-    private String genderRequirements;
+    private GenderType genderRequirements;
 
-    @Enumerated(EnumType.STRING)
     @Type(type = "role_type")
     @Column(name = "first_or_second_role")
-    private String roleType;
+    private RoleType roleType;
 }

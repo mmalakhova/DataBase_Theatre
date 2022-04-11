@@ -1,6 +1,5 @@
 package ru.nsu.fit.bdcourse.theatredemo.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,12 +26,12 @@ public class PerformanceController {
     }
 
     @GetMapping("/performances")
-    public ResponseEntity<List<Performance>> getAllPerformances(@RequestParam(required = false) String title) {
+    public ResponseEntity<List<Performance>> getAllPerformances(@RequestParam(required = false) String name) {
         List<Performance> performances = new ArrayList<>();
-        if (title == null) {
+        if (name == null) {
             performances.addAll(performanceRepository.findAll());
         } else {
-            performances.addAll(performanceRepository.findPerformancesByTitle(title));
+            performances.addAll(performanceRepository.findPerformancesByName(name));
         }
 
         if (performances.isEmpty()) {
@@ -44,7 +43,7 @@ public class PerformanceController {
 
 
     @GetMapping("/performances/{id}")
-    public ResponseEntity<Performance> getPerformanceById(@PathVariable("id") long id) {
+    public ResponseEntity<Performance> getPerformanceById(@PathVariable("id") Long id) {
         Optional<Performance> performanceData = performanceRepository.findById(id);
         return performanceData.map(performance ->
                 new ResponseEntity<>(performance, HttpStatus.OK)).orElseGet(() ->
@@ -53,20 +52,17 @@ public class PerformanceController {
 
     @PostMapping("/performances")
     public ResponseEntity<Performance> createPerformance(@RequestBody Performance performance) {
-        Performance createdPerformance = performanceRepository
-                .save(new Performance(performance.getTitle(), performance.getDate(), performance.getDescription()));
-        return  new ResponseEntity<>(createdPerformance, HttpStatus.CREATED);
+        return new ResponseEntity<>(performanceRepository.save(performance), HttpStatus.OK);
     }
 
     @PutMapping("/performances/{id}")
-    public ResponseEntity<Performance> updatePerformance(@PathVariable("id")long id,
+    public ResponseEntity<Performance> updatePerformance(@PathVariable("id")Long id,
                                                          @RequestBody Performance performance) {
         Optional<Performance> performanceData = performanceRepository.findById(id);
         if (performanceData.isPresent()) {
             Performance updatedPerformance = performanceData.get();
-            updatedPerformance.setTitle(performance.getTitle());
+            updatedPerformance.setName(performance.getName());
             updatedPerformance.setDate(performance.getDate());
-            updatedPerformance.setDescription(performance.getDescription());
             return new ResponseEntity<>(performanceRepository.save(updatedPerformance), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -102,7 +98,7 @@ public class PerformanceController {
 
     //requests connected to authors table
     @GetMapping("/authors/{authorId}/performances")
-    public ResponseEntity<List<Performance>> getAllPerformancesByAuthorId(@PathVariable(value = "authorId") Long authorId) {
+    public ResponseEntity<List<Performance>> getAllPerformancesByAuthorId(@PathVariable(value = "authorId")Long authorId) {
         if (!authorRepository.existsById(authorId)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

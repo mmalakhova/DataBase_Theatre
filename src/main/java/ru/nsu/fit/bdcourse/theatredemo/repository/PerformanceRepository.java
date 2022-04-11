@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface PerformanceRepository extends JpaRepository<Performance, Long> {
     List<Performance> findPerformancesByDate(String date);
-    List<Performance> findPerformancesByTitle(String title);
+    List<Performance> findPerformancesByName(String name);
 
     List<Performance> findPerformancesByActorsId(Long actorId);
 

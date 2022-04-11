@@ -3,6 +3,8 @@ package ru.nsu.fit.bdcourse.theatredemo.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import ru.nsu.fit.bdcourse.theatredemo.enums.GenderType;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -12,16 +14,19 @@ import java.util.Set;
 @Setter
 @EqualsAndHashCode
 @ToString
-@RequiredArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "musicians")
+@TypeDef(
+        name = "gender_type",
+        typeClass = GenderType.class
+)
 public class Musician {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "name")
     private String name;
@@ -32,7 +37,7 @@ public class Musician {
     @Enumerated(EnumType.STRING)
     @Type(type = "gender_type")
     @Column(name = "gender")
-    private String gender;
+    private GenderType gender;
 
     @Column(name = "work_experience")
     private String workExperience;

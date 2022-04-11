@@ -20,6 +20,9 @@ public class Performance {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(name = "name")
+    private String name;
+
     @OneToMany(mappedBy = "performance", fetch = FetchType.LAZY)
     @ToString.Exclude
     @JsonIgnore
@@ -33,13 +36,11 @@ public class Performance {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     @ToString.Exclude
-    @JsonIgnore
     private Author author;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "concert_tour_id")
     @ToString.Exclude
-    @JsonIgnore
     private ConcertTour concertTour;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {

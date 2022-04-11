@@ -6,5 +6,5 @@ import ru.nsu.fit.bdcourse.theatredemo.model.Actor;
 import java.util.List;
 
 public interface ActorRepository extends JpaRepository<Actor, Long> {
-    List<Actor> findActorByPerformancesId(Long performanceId);
+    List<Actor> findActorByPerformancesId(Long performances_id);
 }

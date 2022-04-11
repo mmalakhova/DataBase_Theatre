@@ -43,9 +43,7 @@ public class AuthorController {
 
     @PostMapping("/authors")
     public ResponseEntity<Author> createAuthor(@RequestBody Author author) {
-        Author createdAuthor = authorRepository
-                .save(new Author(author.getName()));
-        return new ResponseEntity<>(createdAuthor, HttpStatus.CREATED);
+        return new ResponseEntity<>(authorRepository.save(author), HttpStatus.CREATED);
     }
 
     @PutMapping("/authors/{id}")

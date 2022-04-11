@@ -9,7 +9,6 @@ import java.time.LocalDate;
 @Setter
 @EqualsAndHashCode
 @ToString
-@RequiredArgsConstructor
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -18,7 +17,7 @@ public class ConcertTour {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "start_date")
     private LocalDate startDate;
