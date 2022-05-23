@@ -12,12 +12,19 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "concert_tours")
 public class ConcertTour {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "title")
+    private String title;
+
+    @Column(name = "descr")
+    private String description;
 
     @Column(name = "start_date")
     private LocalDate startDate;

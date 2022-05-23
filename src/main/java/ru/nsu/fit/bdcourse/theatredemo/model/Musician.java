@@ -2,10 +2,6 @@ package ru.nsu.fit.bdcourse.theatredemo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import ru.nsu.fit.bdcourse.theatredemo.enums.GenderType;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,11 +13,8 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "musicians")
-@TypeDef(
-        name = "gender_type",
-        typeClass = GenderType.class
-)
 public class Musician {
 
     @Id
@@ -34,16 +27,12 @@ public class Musician {
     @Column(name = "age")
     private Integer age;
 
-    @Enumerated(EnumType.STRING)
-    @Type(type = "gender_type")
     @Column(name = "gender")
-    private GenderType gender;
+    private String gender;
 
-    @Column(name = "work_experience")
-    private String workExperience;
+    @Column(name = "instrument")
+    private String instrument;
 
-    @Column(name = "salary")
-    private Integer salary;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {
             CascadeType.PERSIST, CascadeType.MERGE

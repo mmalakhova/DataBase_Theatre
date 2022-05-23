@@ -18,25 +18,16 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "stage_directors")
-@TypeDef(
-        name = "gender_type",
-        typeClass = GenderType.class
-)
-@TypeDef(
-        name = "stage_director_type",
-        typeClass = StageDirectorType.class
-)
 public class StageDirector {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Type(type = "stage_director_type")
     @Column(name = "type_of_stage_director")
-    private StageDirectorType stageDirectorType;
+    private String stageDirectorType;
 
     @Column(name = "name")
     private String name;
@@ -44,16 +35,9 @@ public class StageDirector {
     @Column(name = "age")
     private Integer age;
 
-    @Enumerated(EnumType.STRING)
-    @Type(type = "gender_type")
     @Column(name = "gender")
-    private GenderType gender;
+    private String gender;
 
-    @Column(name = "work_experience")
-    private String workExperience;
-
-    @Column(name = "salary")
-    private Integer salary;
 
     @ManyToMany(mappedBy = "stageDirectors")
     @JsonIgnore

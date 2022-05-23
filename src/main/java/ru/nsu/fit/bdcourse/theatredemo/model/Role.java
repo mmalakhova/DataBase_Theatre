@@ -39,20 +39,21 @@ public class Role {
     @ToString.Exclude
     private Actor actor;
 
-    @Column(name = "vocal_requirements")
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "vocal_req")
     private String vocalRequirements;
 
-    @Column(name = "height_requirements")
+    @Column(name = "height_req")
     private Integer heightRequirements;
 
-    @Column(name = "age_requirements")
+    @Column(name = "age_req")
     private Integer ageRequirements;
 
-    @Type(type = "gender_type")
-    @Column(name = "gender_requirements")
-    private GenderType genderRequirements;
+    @Column(name = "gender_req")
+    private String genderRequirements;
 
-    @Type(type = "role_type")
     @Column(name = "first_or_second_role")
-    private RoleType roleType;
+    private String roleType;
 }

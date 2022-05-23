@@ -1,18 +1,16 @@
 package ru.nsu.fit.bdcourse.theatredemo.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 @Getter
 @Setter
-@EqualsAndHashCode
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "tickets")
 public class Ticket {
 
@@ -33,8 +31,5 @@ public class Ticket {
 
     @Column(name = "seat")
     private Integer seat;
-
-    @Column(name = "is_season_ticket")
-    private Boolean isSeasonTicket;
 
 }

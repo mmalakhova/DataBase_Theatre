@@ -1,20 +1,27 @@
 package ru.nsu.fit.bdcourse.theatredemo.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+import ru.nsu.fit.bdcourse.theatredemo.model.Author;
+import ru.nsu.fit.bdcourse.theatredemo.model.ConcertTour;
 import ru.nsu.fit.bdcourse.theatredemo.model.Performance;
 
-import javax.transaction.Transactional;
-import java.util.List;
 
+@Repository
 public interface PerformanceRepository extends JpaRepository<Performance, Long> {
-    List<Performance> findPerformancesByDate(String date);
-    List<Performance> findPerformancesByName(String name);
+    @Query(nativeQuery = true,
+            value = "select a.* from authors a inner join performances p on a.id = p.author_id " +
+                    "where a.name = ?1")
+    Author findAuthorByName(String authorName);
 
-    List<Performance> findPerformancesByActorsId(Long actorId);
+    @Query(nativeQuery = true,
+            value = "select c.* from concert_tours c inner join performances p on c.id = p.concert_tour_id " +
+                    "where c.title = ?1")
+    ConcertTour findConcertTourByName(String concertTourName);
 
-    List<Performance> findByAuthorId(Long authorId);
-
-    @Transactional
-    void deleteByAuthorId(Long authorId);
+    @Query(nativeQuery = true, value = "select genre from performances group by genre " +
+            "having count(*) >= all (select count(*) from performances group by genre)")
+    String findMostPopularGenre();
 
 }

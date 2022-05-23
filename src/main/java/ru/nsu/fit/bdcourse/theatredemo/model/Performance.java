@@ -9,11 +9,11 @@ import java.util.Set;
 
 @Getter
 @Setter
-@EqualsAndHashCode
 @ToString
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "performances")
 public class Performance {
     @Id
@@ -82,10 +82,8 @@ public class Performance {
     @Column(name = "date")
     private LocalDate date;
 
-    @Column(name = "is_premiere")
-    private Boolean isPremiere;
+    @Column(name = "descr")
+    private String descr;
 
-    @Column(name = "number_of_seats")
-    private Integer numberOfSeats;
 
 }
